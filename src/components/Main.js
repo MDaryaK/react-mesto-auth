@@ -46,8 +46,9 @@ function Main({
         <button className="profile__avatar-button" type="button" onClick={onEditAvatar}>
           <img
             className="profile__photo"
-            src={user.avatar}
+            src={user?.avatar}
             alt="Аватар"
+            style={{ backgroundImage: `url(${userAvatar})` }} 
           />
         </button>
         <div className="profile__info">
