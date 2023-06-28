@@ -1,6 +1,7 @@
 import React from 'react';
 import { api } from '../utils/api.js';
 import Card from './Card.js';
+import avatar from '../images/add-button.svg'
 
 function Main({
   cards,
@@ -13,7 +14,7 @@ function Main({
   onDeleteCard,
 }) {
 
-  const [user, setUser] = React.useState("");
+  const [user, setUser] = React.useState('null');
 
   React.useEffect(() => {
     api.getUserInfo()
@@ -43,12 +44,11 @@ function Main({
   return (
     <main className="main">
       <section className="profile">
-        <button className="profile__avatar-button" type="button" onClick={onEditAvatar}>
+        <button className="profile__avatar-button" src={avatar} type="button" onClick={onEditAvatar}>
           <img
             className="profile__photo"
             src={user?.avatar}
             alt="Аватар"
-            style={{ backgroundImage: `url(${userAvatar})` }} 
           />
         </button>
         <div className="profile__info">
