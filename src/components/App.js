@@ -17,19 +17,23 @@ function App() {
     name: '',
     link: '',
   });
-  const [cardDeleteNumb, setCardDeleteNumb] = React.useState('')
+  const [cardDeleteNumb, setCardDeleteNumb] = React.useState('');
+
+  const [user, setUser] = React.useState(null);
   const [cards, setCards] = React.useState([]);
 
   useEffect(() => getCards(), []);
 
   const getCards = () => {
-    api.getInitialCards()
-      .then((initialCards) => {
-        setCards(initialCards)
-      })
-      .catch(errorMessage => {
-        console.error(`Повторите запрос ${errorMessage}`)
-      });
+    Promise.all([
+      api.getInitialCards(),
+      api.getUserInfo()
+    ]).then(([initialCards, user]) => {
+      setCards(initialCards);
+      setUser(user);
+    }).catch(errorMessage => {
+      console.error(`Повторите запрос ${errorMessage}`)
+    })
   }
 
   function handleEditAvatarClick() {
@@ -115,7 +119,6 @@ function App() {
   }
 
   function handleDisLikeClick(cardId) {
-    console.log('dislike');
     api
       .deleteLike(cardId)
       .then(() => {
@@ -126,12 +129,32 @@ function App() {
       })
   }
 
+  async function handleAvatarUpdate(event) {
+    event.preventDefault();
+
+    const link = event.target[1].value;
+
+    try {
+      await api.updateUserAvatar(link);
+
+      setUser((user) => ({
+        ...user,
+        avatar: link
+      }));
+    } catch (e) {
+      console.log(e);
+    }
+
+    closeAllPopups();
+  }
+
   return (
     <>
       <div className="page">
 
         <Header />
         <Main
+          user={user}
           cards={cards}
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
@@ -230,6 +253,8 @@ function App() {
         isOpen={isEditAvatarPopupOpen}
         name={'change avatar'}
         onClose={closeAllPopups}
+        onCloseMouse={closeAllPopups}
+        onSubmit={handleAvatarUpdate}
         title={'Обновить аватар'}
         textSubmit={'Сохранить'}
       >

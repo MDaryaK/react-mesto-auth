@@ -4,6 +4,7 @@ import Card from './Card.js';
 import avatar from '../images/add-button.svg'
 
 function Main({
+  user,
   cards,
   onEditProfile,
   onAddPlace,
@@ -13,19 +14,6 @@ function Main({
   onDisLikeClick,
   onDeleteCard,
 }) {
-
-  const [user, setUser] = React.useState('null');
-
-  React.useEffect(() => {
-    api.getUserInfo()
-      .then((userInfo) => {
-        setUser(userInfo);
-      })
-      .catch(errorMessage => {
-        console.error(`Повторите запрос ${errorMessage}`)
-      })
-  }, []);
-
   const isLiked = (card) => {
     const index = card.likes.findIndex((item) => item._id === user._id);
 
@@ -44,7 +32,7 @@ function Main({
   return (
     <main className="main">
       <section className="profile">
-        <button className="profile__avatar-button" src={avatar} type="button" onClick={onEditAvatar}>
+        <button className="profile__avatar-button" type="button" onClick={onEditAvatar}>
           <img
             className="profile__photo"
             src={user?.avatar}
@@ -53,10 +41,10 @@ function Main({
         </button>
         <div className="profile__info">
           <div className="profile__title-wrapper">
-            <h1 className="profile__title">{user.name}</h1>
+            <h1 className="profile__title">{user?.name}</h1>
             <button className="profile__add-button" type="button" onClick={onEditProfile} />
           </div>
-          <p className="profile__subtitle">{user.about}</p>
+          <p className="profile__subtitle">{user?.about}</p>
         </div>
         <button className="profile__button" aria-label="active" type="button" onClick={onAddPlace} />
       </section>
