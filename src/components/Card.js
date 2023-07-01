@@ -1,6 +1,23 @@
 import React from 'react';
 
-function Card({ photo, showDelete, isLiked, onDelete, onLikeClick, onCardClick }) {
+function Card({ photo, showDelete, isLiked, onDelete, onLikeClick, onCardClick,  onLikeClick,
+  onDisLikeClick, }) {
+
+  const isLiked = (card) => {
+    const index = card.likes.findIndex((item) => item._id === user._id);
+
+    return index !== -1;
+  }
+
+  const handleLikeClick = (card) => {
+    if (isLiked(card)) {
+      onDisLikeClick(card._id);
+      return;
+    }
+
+    onLikeClick(card._id);
+  };
+
   return (
     <div className="elements__item">
       <img
@@ -24,7 +41,8 @@ function Card({ photo, showDelete, isLiked, onDelete, onLikeClick, onCardClick }
             className={`elements__like ${isLiked ? "elements__like_active" : ""}`}
             aria-label="active"
             type="button"
-            onClick={onLikeClick}
+            onLikeClick={() => handleLikeClick(item)}
+            isLiked={isLiked(item)}
           />
           <div className="elements__counter">{photo.likes.length}</div>
         </div>
