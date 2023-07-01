@@ -51,7 +51,7 @@ function App() {
   function handleCardClick(card) {
     setIsImagePopupOpened(true);
     setSelectedCard(card);
-  };
+  }
 
   function handlePopupClick() {
     setIsPopupClose(true)
@@ -107,28 +107,6 @@ function App() {
       })
   }
 
-  function handleLikeClick(cardId) {
-    api
-      .addLike(cardId)
-      .then(() => {
-        getCards();
-      })
-      .catch(errorMessage => {
-        console.error(`Операция не выполнена ${errorMessage}`)
-      })
-  }
-
-  function handleDisLikeClick(cardId) {
-    api
-      .deleteLike(cardId)
-      .then(() => {
-        getCards();
-      })
-      .catch(errorMessage => {
-        console.error(`Операция не выполнена ${errorMessage}`)
-      })
-  }
-
   async function handleAvatarUpdate(event) {
     event.preventDefault();
 
@@ -161,8 +139,7 @@ function App() {
           onEditAvatar={handleEditAvatarClick}
           onCardClick={handleCardClick}
           onDeleteCard={handleDeletePopup}
-          onLikeClick={handleLikeClick}
-          onDisLikeClick={handleDisLikeClick}
+          onLikeClick={getCards}
           onClose={handlePopupClick}
         />
 

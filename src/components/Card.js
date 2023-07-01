@@ -1,22 +1,28 @@
 import React from 'react';
+import {api} from "../utils/api";
 
-function Card({ photo, showDelete, isLiked, onDelete, onLikeClick, onCardClick,  onLikeClick,
-  onDisLikeClick, }) {
-
-  const isLiked = (card) => {
-    const index = card.likes.findIndex((item) => item._id === user._id);
-
-    return index !== -1;
+function Card({ photo, showDelete, isLiked, onDelete, onLikeClick, onCardClick }) {
+  function handleLikeClick() {
+    api
+      .addLike(photo._id)
+      .then(() => {
+        onLikeClick();
+      })
+      .catch(errorMessage => {
+        console.error(`Операция не выполнена ${errorMessage}`)
+      })
   }
 
-  const handleLikeClick = (card) => {
-    if (isLiked(card)) {
-      onDisLikeClick(card._id);
-      return;
-    }
-
-    onLikeClick(card._id);
-  };
+  function handleDisLikeClick() {
+    api
+      .deleteLike(photo._id)
+      .then(() => {
+        onLikeClick();
+      })
+      .catch(errorMessage => {
+        console.error(`Операция не выполнена ${errorMessage}`)
+      })
+  }
 
   return (
     <div className="elements__item">
@@ -41,8 +47,7 @@ function Card({ photo, showDelete, isLiked, onDelete, onLikeClick, onCardClick, 
             className={`elements__like ${isLiked ? "elements__like_active" : ""}`}
             aria-label="active"
             type="button"
-            onLikeClick={() => handleLikeClick(item)}
-            isLiked={isLiked(item)}
+            onClick={isLiked ? handleDisLikeClick : handleLikeClick}
           />
           <div className="elements__counter">{photo.likes.length}</div>
         </div>

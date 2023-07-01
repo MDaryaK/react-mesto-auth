@@ -10,8 +10,14 @@ function Main({
   onAddPlace,
   onEditAvatar,
   onCardClick,
+  onLikeClick,
   onDeleteCard,
 }) {
+  const isLiked = (card) => {
+    const index = card.likes.findIndex((item) => item._id === user._id);
+
+    return index !== -1;
+  }
 
   return (
     <main className="main">
@@ -37,10 +43,10 @@ function Main({
           <Card
             key={item._id}
             photo={item}
-            isLiked={isLiked}
+            isLiked={isLiked(item)}
             showDelete={item.owner._id === user._id}
             onCardClick={onCardClick}
-            onLikeClick={handleLikeClick}
+            onLikeClick={onLikeClick}
             onDelete={onDeleteCard}
           />
         ))}
