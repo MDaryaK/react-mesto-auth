@@ -13,12 +13,7 @@ function Main({
   onLikeClick,
   onDeleteCard,
 }) {
-  const isLiked = (card) => {
-    const index = card.likes.findIndex((item) => item._id === user._id);
-
-    return index !== -1;
-  }
-
+  
   return (
     <main className="main">
       <section className="profile">
@@ -42,8 +37,8 @@ function Main({
         {cards.map(item => (
           <Card
             key={item._id}
+            user={user}
             photo={item}
-            isLiked={isLiked(item)}
             showDelete={item.owner._id === user._id}
             onCardClick={onCardClick}
             onLikeClick={onLikeClick}

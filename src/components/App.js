@@ -22,18 +22,24 @@ function App() {
   const [user, setUser] = React.useState(null);
   const [cards, setCards] = React.useState([]);
 
-  useEffect(() => getCards(), []);
+  useEffect(() => {
+    getCards();
+
+    api.getUserInfo()
+      .then((user) => {
+        setUser(user);
+      }).catch(errorMessage => {
+        console.error(`Повторите запрос ${errorMessage}`)
+      })
+  }, []);
 
   const getCards = () => {
-    Promise.all([
-      api.getInitialCards(),
-      api.getUserInfo()
-    ]).then(([initialCards, user]) => {
-      setCards(initialCards);
-      setUser(user);
-    }).catch(errorMessage => {
-      console.error(`Повторите запрос ${errorMessage}`)
-    })
+    api.getInitialCards()
+      .then((initialCards) => {
+        setCards(initialCards);
+      }).catch(errorMessage => {
+        console.error(`Повторите запрос ${errorMessage}`)
+      })
   }
 
   function handleEditAvatarClick() {
@@ -51,7 +57,7 @@ function App() {
   function handleCardClick(card) {
     setIsImagePopupOpened(true);
     setSelectedCard(card);
-  }
+  };
 
   function handlePopupClick() {
     setIsPopupClose(true)
@@ -107,6 +113,18 @@ function App() {
       })
   }
 
+  function handleLikeClick(cardId, isLiked) {
+    const likePromise = !isLiked ? api.addLike(cardId) : api.deleteLike(cardId);
+
+    likePromise
+      .then(() => {
+        getCards();
+      })
+      .catch(errorMessage => {
+        console.error(`Операция не выполнена ${errorMessage}`)
+      })
+  }
+
   async function handleAvatarUpdate(event) {
     event.preventDefault();
 
@@ -139,7 +157,7 @@ function App() {
           onEditAvatar={handleEditAvatarClick}
           onCardClick={handleCardClick}
           onDeleteCard={handleDeletePopup}
-          onLikeClick={getCards}
+          onLikeClick={handleLikeClick}
           onClose={handlePopupClick}
         />
 
