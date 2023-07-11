@@ -1,11 +1,17 @@
-import React from 'react';
+import React, {useContext} from 'react';
+import {CurrentUserContext} from "../contexts/CurrentUser";
 
-function Card({ photo, user, showDelete, onDelete, onLikeClick, onCardClick }) {
+function Card({ photo, onDelete, onLikeClick, onCardClick }) {
+
+  const user = useContext(CurrentUserContext);
+
   const isLiked = () => {
     const index = photo.likes.findIndex((item) => item._id === user._id);
 
     return index !== -1;
   }
+
+  const isOwn = photo.owner._id === user._id;
 
   return (
     <div className="elements__item">
@@ -17,7 +23,7 @@ function Card({ photo, user, showDelete, onDelete, onLikeClick, onCardClick }) {
       />
       <div className="elements__block">
         <h2 className="elements__title">{photo.name}</h2>
-        {showDelete && (
+        {isOwn && (
           <button
             className="elements__trash"
             aria-label="active"

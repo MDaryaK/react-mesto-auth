@@ -5,13 +5,15 @@ import Footer from './Footer.js';
 import PopupWithForm from './PopupWithForm.js';
 import ImagePopup from './ImagePopup.js';
 import { api } from '../utils/api';
+import {CurrentUserContext} from "../contexts/CurrentUser";
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false)
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false)
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false)
   const [isDeleteCardPopupOpen, setIsDeleteCardPopupOpen] = React.useState(false)
-  const [isPopupClose, setIsPopupClose] = React.useState(false)
   const [isImagePopupOpened, setIsImagePopupOpened] = React.useState(false)
   const [selectedCard, setSelectedCard] = React.useState({
     name: '',
@@ -19,7 +21,7 @@ function App() {
   });
   const [cardDeleteNumb, setCardDeleteNumb] = React.useState('');
 
-  const [user, setUser] = React.useState(null);
+  const [currentUser, setCurrentUser] = React.useState(null);
   const [cards, setCards] = React.useState([]);
 
   useEffect(() => {
@@ -27,7 +29,7 @@ function App() {
 
     api.getUserInfo()
       .then((user) => {
-        setUser(user);
+        setCurrentUser(user);
       }).catch(errorMessage => {
         console.error(`Повторите запрос ${errorMessage}`)
       })
@@ -57,17 +59,12 @@ function App() {
   function handleCardClick(card) {
     setIsImagePopupOpened(true);
     setSelectedCard(card);
-  };
-
-  function handlePopupClick() {
-    setIsPopupClose(true)
   }
 
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
-    setIsPopupClose(false);
     setIsDeleteCardPopupOpen(false);
     setIsImagePopupOpened(false);
     setSelectedCard({
@@ -125,15 +122,11 @@ function App() {
       })
   }
 
-  async function handleAvatarUpdate(event) {
-    event.preventDefault();
-
-    const link = event.target[1].value;
-
+  async function handleUpdateAvatar(link) {
     try {
       await api.updateUserAvatar(link);
 
-      setUser((user) => ({
+      setCurrentUser((user) => ({
         ...user,
         avatar: link
       }));
@@ -144,13 +137,27 @@ function App() {
     closeAllPopups();
   }
 
+  async function handleUpdateUser(data) {
+    try {
+      await api.setUserInfo(data);
+
+      setCurrentUser((user) => ({
+        ...user,
+        ...data
+      }));
+    } catch (e) {
+      console.log(e);
+    }
+
+    closeAllPopups();
+  }
+
   return (
-    <>
+    <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
 
         <Header />
         <Main
-          user={user}
           cards={cards}
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
@@ -158,45 +165,17 @@ function App() {
           onCardClick={handleCardClick}
           onDeleteCard={handleDeletePopup}
           onLikeClick={handleLikeClick}
-          onClose={handlePopupClick}
         />
 
         <Footer />
 
       </div>
-      <PopupWithForm
+
+      <EditProfilePopup
         isOpen={isEditProfilePopupOpen}
-        name={'Profile'}
         onClose={closeAllPopups}
-        onCloseMouse={closeAllPopups}
-        title={'Редактировать профиль'}
-        textSubmit={'Сохранить'}
-      >
-        <fieldset className="form__info">
-          <input
-            id="form-name"
-            type="text"
-            className="form__box form__box_type_name"
-            minLength={2}
-            maxLength={40}
-            placeholder="Введите имя"
-            name="name"
-            required=""
-          />
-          <span className="form__error form-name-error" />
-          <input
-            id="form-job"
-            type="text"
-            className="form__box form__box_type_about"
-            minLength={2}
-            maxLength={200}
-            placeholder="О себе"
-            name="about"
-            required=""
-          />
-          <span className="form__error form-job-error" />
-        </fieldset>
-      </PopupWithForm>
+        onUpdateUser={handleUpdateUser}
+      />
 
       <PopupWithForm
         isOpen={isAddPlacePopupOpen}
@@ -244,26 +223,11 @@ function App() {
       >
       </PopupWithForm>
 
-      <PopupWithForm
+      <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}
-        name={'change avatar'}
         onClose={closeAllPopups}
-        onCloseMouse={closeAllPopups}
-        onSubmit={handleAvatarUpdate}
-        title={'Обновить аватар'}
-        textSubmit={'Сохранить'}
-      >
-        <fieldset className="form__info">
-          <input
-            type="url"
-            className="form__box form__box_type_link"
-            id="form-src"
-            name="src"
-            placeholder="Ссылка на картинку"
-            required=""
-          />
-        </fieldset>
-      </PopupWithForm>
+        onUpdateAvatar={handleUpdateAvatar}
+      />
 
       <ImagePopup
         name={'popup__photo'}
@@ -273,7 +237,7 @@ function App() {
         card={selectedCard}
       />
       <template id="card_template" />
-    </>
+    </CurrentUserContext.Provider>
 
   )
 }

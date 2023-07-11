@@ -1,10 +1,9 @@
-import React from 'react';
-import { api } from '../utils/api.js';
+import React, {useContext} from 'react';
 import Card from './Card.js';
-import avatar from '../images/add-button.svg'
+
+import {CurrentUserContext} from "../contexts/CurrentUser";
 
 function Main({
-  user,
   cards,
   onEditProfile,
   onAddPlace,
@@ -13,7 +12,8 @@ function Main({
   onLikeClick,
   onDeleteCard,
 }) {
-  
+  const user = useContext(CurrentUserContext);
+
   return (
     <main className="main">
       <section className="profile">
@@ -37,9 +37,7 @@ function Main({
         {cards.map(item => (
           <Card
             key={item._id}
-            user={user}
             photo={item}
-            showDelete={item.owner._id === user._id}
             onCardClick={onCardClick}
             onLikeClick={onLikeClick}
             onDelete={onDeleteCard}
