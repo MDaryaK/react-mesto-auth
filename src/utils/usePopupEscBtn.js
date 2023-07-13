@@ -14,6 +14,6 @@ export function usePopupEscBtn(isOpen, onClose) {
     return () => {
       document.removeEventListener("keydown", popupEscapeClose);
     };
-  }, [isOpen, onClose]
+  }, [isOpen]
   );
 }

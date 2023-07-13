@@ -8,23 +8,20 @@ function PopupWithForm({
   textSubmit,
   isOpen,
   onClose,
-  onCloseMouse,
   onSubmit
 }) {
 
   usePopupEscBtn(isOpen, onClose);
 
-  const handlePopupClick = useCallback(
-    (event) => {
-      if (event.target.classList.contains("popup")) {
-        onCloseMouse();
-      }
-    },
-    [onCloseMouse]
-  );
+  const handlePopupClick = (e) => {
+    if (e.target.classList.contains("popup")) {
+      onClose();
+    }
+  };
 
   return (
-    <div className={`popup popup_type_profile_${name + (isOpen && ' popup_opened')}`}
+    <div
+      className={`popup popup_type_profile_${name + (isOpen ? ' popup_opened' : '')}`}
       onClick={handlePopupClick}
     >
       <div className="popup__container">
@@ -35,7 +32,7 @@ function PopupWithForm({
 
             {children}
 
-            <button className="form__save form__save_inactive" type="submit">
+            <button className="form__save" type="submit">
               {textSubmit}
             </button>
           </form>
@@ -43,7 +40,7 @@ function PopupWithForm({
       </div>
     </div>
   )
-};
+}
 
 
 export default PopupWithForm;

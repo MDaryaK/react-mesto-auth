@@ -1,14 +1,14 @@
 import PopupWithForm from "./PopupWithForm";
-import React, {useState} from "react";
+import React, {useRef} from "react";
 
 export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
 
-  const [link, setLink] = useState("");
+  const link = useRef(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    onUpdateAvatar(link);
+    onUpdateAvatar(link.current.value);
   };
 
   return (
@@ -25,11 +25,9 @@ export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
         <input
           className="form__box form__box_type_link"
           type="url"
-          value={link}
-          name="src"
+          ref={link}
           placeholder="Ссылка на картинку"
-          required=""
-          onChange={(e) => setLink(e.currentTarget.value)}
+          required
         />
       </fieldset>
     </PopupWithForm>

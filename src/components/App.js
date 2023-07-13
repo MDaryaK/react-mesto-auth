@@ -8,6 +8,7 @@ import { api } from '../utils/api';
 import {CurrentUserContext} from "../contexts/CurrentUser";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false)
@@ -93,33 +94,31 @@ function App() {
       })
   }
 
-  function handleCardCreate(event) {
-    event.preventDefault();
+  async function handleCardCreate(name, link) {
+    try {
+      const data = await api.createNewCard(name, link);
+      setCards((cards) => [data, ...cards]);
 
-    const name = event.target[1].value;
-    const link = event.target[2].value;
-
-    api
-      .createNewCard(name, link)
-      .then(() => {
-        getCards();
-        closeAllPopups();
-      })
-      .catch(errorMessage => {
-        console.error(`Операция не выполнена ${errorMessage}`)
-      })
+      closeAllPopups();
+    } catch (e) {
+      console.log(e);
+    }
   }
 
-  function handleLikeClick(cardId, isLiked) {
-    const likePromise = !isLiked ? api.addLike(cardId) : api.deleteLike(cardId);
+  async function handleLikeClick(cardId, isLiked) {
+    try {
+      const like = !isLiked ? await api.addLike(cardId) : await api.deleteLike(cardId);
 
-    likePromise
-      .then(() => {
-        getCards();
-      })
-      .catch(errorMessage => {
-        console.error(`Операция не выполнена ${errorMessage}`)
-      })
+      setCards((cards) => cards.map((item) => {
+        if (item._id === like._id) {
+          return like;
+        }
+
+        return item;
+      }));
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async function handleUpdateAvatar(link) {
@@ -130,11 +129,11 @@ function App() {
         ...user,
         avatar: link
       }));
+
+      closeAllPopups();
     } catch (e) {
       console.log(e);
     }
-
-    closeAllPopups();
   }
 
   async function handleUpdateUser(data) {
@@ -145,11 +144,11 @@ function App() {
         ...user,
         ...data
       }));
+
+      closeAllPopups();
     } catch (e) {
       console.log(e);
     }
-
-    closeAllPopups();
   }
 
   return (
@@ -178,41 +177,6 @@ function App() {
       />
 
       <PopupWithForm
-        isOpen={isAddPlacePopupOpen}
-        name={'create place'}
-        onClose={closeAllPopups}
-        onCloseMouse={closeAllPopups}
-        onSubmit={handleCardCreate}
-        title={'Новое место'}
-        textSubmit={'Создать'}
-      >
-        <fieldset className="form__info">
-          <input
-            type="text"
-            className="form__box form__box_type_name"
-            id="form-place"
-            name="place"
-            placeholder="Название"
-            minLength={2}
-            maxLength={30}
-            required=""
-          />
-          <span className="form__error form-place-error form__error_active">
-          </span>
-          <input
-            type="url"
-            className="form__box form__box_type_link"
-            id="form-url"
-            name="url"
-            placeholder="Ссылка на картинку"
-            required=""
-          />
-          <span className="form__error form-web-error form__error_active">
-          </span>
-        </fieldset>
-      </PopupWithForm>
-
-      <PopupWithForm
         isOpen={isDeleteCardPopupOpen}
         name={'delete card'}
         onClose={closeAllPopups}
@@ -220,8 +184,13 @@ function App() {
         onSubmit={handleCardDelete}
         title={'Вы уверены?'}
         textSubmit={'Да'}
-      >
-      </PopupWithForm>
+      />
+
+      <AddPlacePopup
+        isOpen={isAddPlacePopupOpen}
+        onClose={closeAllPopups}
+        onAddPlace={handleCardCreate}
+      />
 
       <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}
@@ -236,7 +205,6 @@ function App() {
         onCloseMouse={closeAllPopups}
         card={selectedCard}
       />
-      <template id="card_template" />
     </CurrentUserContext.Provider>
 
   )

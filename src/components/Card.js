@@ -5,12 +5,11 @@ function Card({ photo, onDelete, onLikeClick, onCardClick }) {
 
   const user = useContext(CurrentUserContext);
 
-  const isLiked = () => {
-    const index = photo.likes.findIndex((item) => item._id === user._id);
+  const handleCardClick = () => onCardClick({ name: photo.name, link: photo.link });
+  const handleLikeClick = () => onLikeClick(photo._id, isLiked);
+  const handleCardDelete = () => onDelete(photo._id);
 
-    return index !== -1;
-  }
-
+  const isLiked = photo.likes.some((item) => item._id === user._id);
   const isOwn = photo.owner._id === user._id;
 
   return (
@@ -19,7 +18,7 @@ function Card({ photo, onDelete, onLikeClick, onCardClick }) {
         className="elements__photo"
         src={photo.link}
         alt={photo.name}
-        onClick={() => onCardClick({ name: photo.name, link: photo.link })}
+        onClick={handleCardClick}
       />
       <div className="elements__block">
         <h2 className="elements__title">{photo.name}</h2>
@@ -28,15 +27,15 @@ function Card({ photo, onDelete, onLikeClick, onCardClick }) {
             className="elements__trash"
             aria-label="active"
             type="button"
-            onClick={() => onDelete(photo._id)}
+            onClick={handleCardDelete}
           />
         )}
         <div className="elements__likes">
           <button
-            className={`elements__like ${isLiked() ? "elements__like_active" : ""}`}
+            className={`elements__like ${isLiked ? "elements__like_active" : ""}`}
             aria-label="active"
             type="button"
-            onClick={() => onLikeClick(photo._id, isLiked())}
+            onClick={handleLikeClick}
           />
           <div className="elements__counter">{photo.likes.length}</div>
         </div>

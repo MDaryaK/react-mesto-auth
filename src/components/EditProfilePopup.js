@@ -16,7 +16,7 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
 
     setName(user.name);
     setAbout(user.about);
-  }, [user]);
+  }, [user, isOpen]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
