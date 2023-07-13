@@ -9,6 +9,7 @@ import {CurrentUserContext} from "../contexts/CurrentUser";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import DeleteCardPopup from "./DeleteCardPopup";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false)
@@ -107,11 +108,11 @@ function App() {
 
   async function handleLikeClick(cardId, isLiked) {
     try {
-      const like = !isLiked ? await api.addLike(cardId) : await api.deleteLike(cardId);
+      const card = !isLiked ? await api.addLike(cardId) : await api.deleteLike(cardId);
 
       setCards((cards) => cards.map((item) => {
-        if (item._id === like._id) {
-          return like;
+        if (item._id === card._id) {
+          return card;
         }
 
         return item;
@@ -176,14 +177,10 @@ function App() {
         onUpdateUser={handleUpdateUser}
       />
 
-      <PopupWithForm
+      <DeleteCardPopup
         isOpen={isDeleteCardPopupOpen}
-        name={'delete card'}
         onClose={closeAllPopups}
-        onCloseMouse={closeAllPopups}
-        onSubmit={handleCardDelete}
-        title={'Вы уверены?'}
-        textSubmit={'Да'}
+        onCardDelete={handleCardDelete}
       />
 
       <AddPlacePopup

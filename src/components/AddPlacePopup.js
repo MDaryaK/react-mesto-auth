@@ -1,10 +1,15 @@
 import PopupWithForm from "./PopupWithForm";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 export default function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
 
   const [name, setName] = useState("");
   const [link, setLink] = useState("");
+
+  useEffect(() => {
+    setName("");
+    setLink("");
+  }, [isOpen])
 
   const handleSubmit = (e) => {
     e.preventDefault();
