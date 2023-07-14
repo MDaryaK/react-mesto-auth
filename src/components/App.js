@@ -81,7 +81,6 @@ function App() {
   }
 
   function handleCardDelete(event) {
-    event.preventDefault();
     api
       .deleteCard(cardDeleteNumb)
       .then(() => {
