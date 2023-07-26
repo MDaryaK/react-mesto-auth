@@ -1,6 +1,6 @@
 import headerLogo from '../images/Vector_1.svg';
 
-function Header() {
+function Header({ children }) {
   return (
     <header className="header">
       <img
@@ -8,8 +8,9 @@ function Header() {
         src={headerLogo}
         alt="Россия"
       />
+      {children}
     </header>
   )
-};
+}
 
 export default Header;

@@ -96,10 +96,46 @@ class Api {
       .then(this._getResponseData);
   }
 
+  getUserInfoAuth(token) {
+    return fetch('https://auth.nomoreparties.co/users/me', {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(this._getResponseData);
+  }
+
+  login(email, password) {
+    return fetch('https://auth.nomoreparties.co/signin', {
+      method: 'POST',
+      headers: this._headers,
+      body: JSON.stringify({
+        email,
+        password
+      })
+    })
+      .then(this._getResponseData);
+  }
+
+  register(email, password) {
+    return fetch('https://auth.nomoreparties.co/signup', {
+      method: 'POST',
+      headers: this._headers,
+      body: JSON.stringify({
+        email,
+        password
+      })
+    })
+      .then(this._getResponseData);
+  }
+
 }
 
 export const api = new Api({
   baseUrl: 'https://nomoreparties.co/v1/cohort-68',
+  // baseUrl: 'https://auth.nomoreparties.co',
   headers: {
     authorization: 'd04afa61-1239-4cd9-8e4f-6ea23509e870',
     'Content-Type': 'application/json'
