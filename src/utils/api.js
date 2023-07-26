@@ -134,7 +134,7 @@ class Api {
 }
 
 export const api = new Api({
-  baseUrl: 'https://nomoreparties.co/v1/cohort-68',
+  baseUrl: 'https://auth.nomoreparties.co/v1/cohort-68',
   // baseUrl: 'https://auth.nomoreparties.co',
   headers: {
     authorization: 'd04afa61-1239-4cd9-8e4f-6ea23509e870',
