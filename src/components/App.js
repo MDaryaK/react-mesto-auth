@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
 import ImagePopup from './ImagePopup.js';
@@ -9,11 +8,10 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import DeleteCardPopup from "./DeleteCardPopup";
-import {Link, Route, Switch, withRouter} from "react-router-dom";
-import Register from "./Register";
-import Login from "./Login";
+import {Route, Switch, withRouter} from "react-router-dom";
 import InfoTooltipPopup from "./InfoTooltipPopup";
 import ProtectedRouter from "./ProtectedRouter";
+import AuthForm from "./AuthForm";
 
 function App(props) {
   const [isAuth, setIsAuth] = useState(true);
@@ -241,8 +239,8 @@ function App(props) {
               <Footer />
             </ProtectedRouter>
           </Route>
-          <Route path="/sign-in" children={<Login onLogin={handleLogin} />} />
-          <Route path="/sign-up" children={<Register onRegister={handleRegister} />} />
+          <Route path="/sign-in" children={<AuthForm type="login" onAuth={handleLogin} />} />
+          <Route path="/sign-up" children={<AuthForm type="register" onAuth={handleRegister} />} />
         </Switch>
       </div>
 
